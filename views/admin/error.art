@@ -1,0 +1,5 @@
+{{ extend './common/layout.art'}}
+
+{{block 'main'}}
+    <p class="bg-danger error">{{msg}}</p>
+{{/block}}

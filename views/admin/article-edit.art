@@ -1,0 +1,84 @@
+{{extend './common/layout.art'}}
+    {{ block 'main'}}
+	<!-- 头部 -->
+    {{ include './common/header.art' }}
+    <!-- /头部 -->
+    <!-- 主体内容 -->
+    <div class="content">
+    	<!-- 侧边栏 -->
+        {{ include './common/aside.art'}}
+        <!-- 侧边栏 -->
+        <div class="main">
+            <!-- 分类标题 -->
+            <div class="title">
+                <h4>{{id}}</h4>
+            </div>
+            <form class="form-container" action="{{link}}" method="post" enctype = "multipart/form-data">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input name="title" type="text" class="form-control" placeholder="请输入文章标题" value="{{article && article.title}}">
+                </div>
+                <div class="form-group">
+                    <label>作者</label>
+                    <input name="author" type="text" class="form-control" readonly value = "{{@ id == underfine?userInfo._id:username}}">
+                </div>
+                <div class="form-group">
+                    <label>发布时间</label>
+                    <input name="publishDate" type="date" class="form-control" value="{{article && moment(article.publishDate).format("YYYY-MM-DD")}}">
+                </div>
+                
+                <div class="form-group">
+                   <label for="exampleInputFile">文章封面</label>
+                   <input id="file" type="file" name="cover">
+                   <div class="thumbnail-waper">
+                       <img class="img-thumbnail" src="{{article && article.cover}}" id="preview">
+                   </div>
+                </div>
+                <div class="form-group">
+                    <label>内容</label>
+                    <textarea name="content" class="form-control" id="editor">{{article && article.content}}</textarea>
+                </div>
+                <div class="buttons">
+                    <input type="submit" class="btn btn-primary" value="{{id === underfine?'新增':'修改'}}">
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    {{/block}}
+    {{block 'script'}}
+    <!-- /主体内容 -->
+    <script src="/admin/lib/ckeditor5/ckeditor.js"></script>
+    <script type="text/javascript">
+    
+        let editor;
+
+        ClassicEditor
+                .create( document.querySelector('#editor'))
+                .then(newEditor => {
+                    editor = newEditor;
+                })
+                .catch( error => {
+                    console.error( error );
+                });
+
+        // 获取数据
+        // const editorData = editor.getData();
+
+        let file = document.querySelector('#file')
+        let preview = document.querySelector('#preview')
+        //选择完文件以后
+        file.onchange = function(){
+            // 创建文件读取对象
+            let reader = new FileReader()
+            //用户选则的文件列表
+            // this.files[0]
+            // 读取文件 默认只读取第一个
+            reader.readAsDataURL(this.files[0])
+            // 监听读取
+            reader.onload = function(){
+                preview.src = reader.result
+            }
+        }
+    </script>
+    {{/block}}
